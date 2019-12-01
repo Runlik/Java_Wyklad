@@ -5,14 +5,15 @@ import java.util.Collections;
 
 public class Basket {
     private ArrayList<Product> items;
+    private ArrayList<Discount> discounts;
     private Product promoItem = new Product("PromoCup", "Promotional Cup", 0);
     private boolean isPromoItemFlag = false;
-    private int discount30; //-1 jeśli nie wybrano produktu do rabatu. W przeciwnym razie indeks produktu
+  //  private int discount30; //-1 jeśli nie wybrano produktu do rabatu. W przeciwnym razie indeks produktu
 
 
     Basket(){
         this.items = new ArrayList<>();
-        this.discount30 = -1;
+        this.discounts = new ArrayList<>();
     }
 
     private void sortItems(){
@@ -25,6 +26,10 @@ public class Basket {
         this.checkPromoItem();
         this.checkDiscounts();
         this.sortItems();
+    }
+
+    public void addDiscount(Discount discount){
+        this.discounts.add(discount);
     }
 
     private void checkPromoItem(){
@@ -49,8 +54,7 @@ public class Basket {
     public void removeItem(int index){
         this.items.remove(index);
         this.checkPromoItem();
-        if (this.getDiscount30() == index)
-            this.removeDiscount30();
+
         this.checkDiscounts();
 
     }
@@ -58,8 +62,7 @@ public class Basket {
     public void removeItems(String code){
         for(Product item:this.getItems()){
             if (item.getCode().equals(code)) {
-                if(this.items.indexOf(item) == this.getDiscount30())
-                    this.removeDiscount30();
+
                 this.removeItem(item);
             }
         }
@@ -107,43 +110,17 @@ public class Basket {
         return result;
     }
 
-    public void setDiscount30(int index){
-        if(index < this.items.size()) {
-            this.discount30 = index;
-            this.items.get(index).setDiscountPrice(30);
-        }
-    }
+    private void setDiscounts(){}
 
-    public void removeDiscount30(){
-        if(discount30 >=0) {
-            this.items.get(discount30).setDiscountPrice(100);
-            discount30 = -1;
-        }
-        checkDiscounts();
-    }
+    private void checkDiscounts() {}
+
+    private void applyDiscount(){}
+
+    private void retractDiscount(){}
 
 
 
-
-    private void checkDiscounts() {
-        //dodanie 5% zniżki
-        if (getTotalPrice() > 300)
-            for (Product item : this.items) {
-                if (this.getDiscount30() != items.indexOf(item)) {
-                    item.setDiscountPrice(5);
-                }
-
-            }
-        //odjęcie 5% zniżki
-        if (getTotalPrice() <= 300)
-            for (Product item : this.items) {
-                if (this.getDiscount30() != items.indexOf(item)) {
-                    item.setDiscountPrice(0);
-                }
-
-            }
-
-    }
+    private void removeDiscount(){}
 
 
     public void print(){
@@ -171,9 +148,44 @@ public class Basket {
         return new ArrayList<>(this.items);
     }
 
-    public int getDiscount30() {
-        return this.discount30;
+//    public int getDiscount30() {
+//        return this.discount30;
+//    }
+
+
+}
+
+
+
+class Discount {
+    String name;
+    int scope; //  0==wszystkie przedmioty
+    int value;
+    int indexOfProduct;
+
+    public Discount(String name, int scope, int value) {
+        this.name = name;
+        this.scope = scope;
+        if(value <100 && value>0){
+            this.value = value;
+        }
+        this.indexOfProduct = -1;
     }
 
+    public int getValue() {
+        return value;
+    }
+
+    public int getIndexOfProduct() {
+        return indexOfProduct;
+    }
+
+    public void setIndexOfProduct(int indexOfProduct) {
+        this.indexOfProduct = indexOfProduct;
+    }
+
+    public String getScope() {
+        return scope;
+    }
 
 }
